@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1051296207544",
+    "project_id": "billitup-aefff",
+    "storage_bucket": "billitup-aefff.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1051296207544:android:f97e2bd33509e31aac5a4d",
+        "android_client_info": {
+          "package_name": "com.fluidledger.barcodescanner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfxq_LGvN_62uNvRQTDWj3Y1Tlzn_Lz2k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

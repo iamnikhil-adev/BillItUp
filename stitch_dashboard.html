@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Fluid Ledger - Bill History</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#e2e2e4",
+                        "secondary-fixed": "#d9e2ff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#7b2e12",
+                        "on-primary-container": "#8690ee",
+                        "on-tertiary-fixed": "#390c00",
+                        "background": "#f9f9fb",
+                        "inverse-surface": "#2f3132",
+                        "secondary-fixed-dim": "#b0c6ff",
+                        "secondary-container": "#0f6df3",
+                        "primary": "#000666",
+                        "outline-variant": "#c6c5d4",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#bdc2ff",
+                        "on-background": "#1a1c1d",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#e8e8ea",
+                        "secondary": "#0056c5",
+                        "surface": "#f9f9fb",
+                        "inverse-on-surface": "#f0f0f2",
+                        "on-surface-variant": "#454652",
+                        "surface-bright": "#f9f9fb",
+                        "on-primary-fixed": "#000767",
+                        "on-secondary-fixed": "#001945",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#e2e2e4",
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-secondary-container": "#fefcff",
+                        "on-primary-fixed-variant": "#343d96",
+                        "primary-container": "#1a237e",
+                        "surface-container-low": "#f3f3f5",
+                        "surface-dim": "#d9dadc",
+                        "on-surface": "#1a1c1d",
+                        "on-tertiary-container": "#e17c5a",
+                        "primary-fixed": "#e0e0ff",
+                        "error-container": "#ffdad6",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#00429b",
+                        "tertiary-container": "#5c1800",
+                        "error": "#ba1a1a",
+                        "surface-container": "#eeeef0",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#380b00",
+                        "inverse-primary": "#bdc2ff",
+                        "surface-tint": "#4c56af",
+                        "outline": "#767683"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: theme('colors.surface');
+            color: theme('colors.on-surface');
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Manrope', sans-serif;
+        }
+        .glass-card {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface min-h-screen flex flex-col relative pb-24 font-body">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center w-full px-6 py-4 bg-[#f9f9fb] dark:bg-slate-950 font-['Manrope'] font-bold text-xl tracking-tight text-[#1A237E] dark:text-blue-400 docked full-width top-0 bg-[#f3f3f5] dark:bg-slate-900 flat no shadows z-40 sticky">
+<div class="flex items-center gap-4 hover:opacity-80 transition-opacity cursor-pointer scale-95 active:transition-transform">
+<span class="material-symbols-outlined text-2xl">menu</span>
+</div>
+<h1 class="text-xl font-bold text-[#1A237E] dark:text-blue-400">Bill History</h1>
+<div class="w-10 h-10 rounded-full overflow-hidden hover:opacity-80 transition-opacity cursor-pointer scale-95 active:transition-transform border border-outline-variant/15">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Close up portrait of a young professional with a warm smile, well lit" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDy5sRM2GPmIY4z7kP51N7L2biAOryf7fS5jxeFJWZvir2-S4jRmoI9t8MaP-rF0mOaJYvhe1RqVUs_a6GzVm_lFWq069rgGKhqUhE-5izB_kkXoU2qoCCsYSeB-23hCG9QputC8A7d1np7nmolV39C16wta4lNpEUXhQxrpDyEb-5SkmF0eKNES0tqslp4l5cADzfXeWgWufsJxeteWekhNEOhtnKkU3scgJThIEa1YLdtW5KskA0vqXSQsI-v1fuqSCcWMIFd5xc3"/>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow px-4 md:px-8 py-6 max-w-4xl mx-auto w-full flex flex-col gap-sm">
+<!-- Summary/Insights Banner (Optional Context) -->
+<div class="bg-surface-container-low rounded-xl p-6 mb-4 flex justify-between items-center">
+<div>
+<p class="font-label text-sm text-on-surface-variant mb-1">Total Scanned Bills</p>
+<h2 class="font-headline text-3xl font-bold text-primary">142</h2>
+</div>
+<div class="text-right">
+<p class="font-label text-sm text-on-surface-variant mb-1">This Month</p>
+<h2 class="font-headline text-xl font-bold text-secondary">+12</h2>
+</div>
+</div>
+<!-- Bill Cards List -->
+<div class="flex flex-col gap-3">
+<!-- Card 1 -->
+<div class="glass-card rounded-lg p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] shadow-[0_4px_24px_rgba(26,35,126,0.04)] hover:shadow-[0_8px_32px_rgba(26,35,126,0.08)] border border-outline-variant/15 group relative overflow-hidden">
+<div class="absolute inset-0 bg-surface-tint opacity-0 group-hover:opacity-[0.02] transition-opacity"></div>
+<div class="flex items-center gap-4 mb-3 sm:mb-0 relative z-10">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-secondary group-hover:bg-secondary-fixed transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-on-surface text-lg">BILL_20250417_001</h3>
+<p class="font-label text-sm text-on-surface-variant flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span> Apr 17, 2025
+                        </p>
+</div>
+</div>
+<div class="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end relative z-10">
+<div class="text-left sm:text-right">
+<p class="font-label text-xs text-on-surface-variant uppercase tracking-wider mb-0.5">Items</p>
+<p class="font-body font-medium text-on-surface">24 Products</p>
+</div>
+<div class="px-3 py-1 bg-surface-container rounded-full border border-outline-variant/15">
+<p class="font-label text-xs font-semibold text-on-surface-variant">Processed</p>
+</div>
+</div>
+</div>
+<!-- Card 2 (Zebra Stripe approach using subtle bg shift if not glass) -->
+<div class="bg-surface-container-lowest rounded-lg p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] shadow-[0_4px_24px_rgba(26,35,126,0.04)] hover:shadow-[0_8px_32px_rgba(26,35,126,0.08)] border border-outline-variant/15 group relative overflow-hidden">
+<div class="absolute inset-0 bg-surface-tint opacity-0 group-hover:opacity-[0.02] transition-opacity"></div>
+<div class="flex items-center gap-4 mb-3 sm:mb-0 relative z-10">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-secondary group-hover:bg-secondary-fixed transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-on-surface text-lg">BILL_20250415_042</h3>
+<p class="font-label text-sm text-on-surface-variant flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span> Apr 15, 2025
+                        </p>
+</div>
+</div>
+<div class="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end relative z-10">
+<div class="text-left sm:text-right">
+<p class="font-label text-xs text-on-surface-variant uppercase tracking-wider mb-0.5">Items</p>
+<p class="font-body font-medium text-on-surface">8 Products</p>
+</div>
+<div class="px-3 py-1 bg-tertiary/10 rounded-full border border-tertiary/20">
+<p class="font-label text-xs font-semibold text-tertiary">Review</p>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="glass-card rounded-lg p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] shadow-[0_4px_24px_rgba(26,35,126,0.04)] hover:shadow-[0_8px_32px_rgba(26,35,126,0.08)] border border-outline-variant/15 group relative overflow-hidden">
+<div class="absolute inset-0 bg-surface-tint opacity-0 group-hover:opacity-[0.02] transition-opacity"></div>
+<div class="flex items-center gap-4 mb-3 sm:mb-0 relative z-10">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-secondary group-hover:bg-secondary-fixed transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-on-surface text-lg">BILL_20250410_018</h3>
+<p class="font-label text-sm text-on-surface-variant flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span> Apr 10, 2025
+                        </p>
+</div>
+</div>
+<div class="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end relative z-10">
+<div class="text-left sm:text-right">
+<p class="font-label text-xs text-on-surface-variant uppercase tracking-wider mb-0.5">Items</p>
+<p class="font-body font-medium text-on-surface">112 Products</p>
+</div>
+<div class="px-3 py-1 bg-surface-container rounded-full border border-outline-variant/15">
+<p class="font-label text-xs font-semibold text-on-surface-variant">Processed</p>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest rounded-lg p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] shadow-[0_4px_24px_rgba(26,35,126,0.04)] hover:shadow-[0_8px_32px_rgba(26,35,126,0.08)] border border-outline-variant/15 group relative overflow-hidden">
+<div class="absolute inset-0 bg-surface-tint opacity-0 group-hover:opacity-[0.02] transition-opacity"></div>
+<div class="flex items-center gap-4 mb-3 sm:mb-0 relative z-10">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-secondary group-hover:bg-secondary-fixed transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-on-surface text-lg">BILL_20250402_005</h3>
+<p class="font-label text-sm text-on-surface-variant flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span> Apr 02, 2025
+                        </p>
+</div>
+</div>
+<div class="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end relative z-10">
+<div class="text-left sm:text-right">
+<p class="font-label text-xs text-on-surface-variant uppercase tracking-wider mb-0.5">Items</p>
+<p class="font-body font-medium text-on-surface">45 Products</p>
+</div>
+<div class="px-3 py-1 bg-surface-container rounded-full border border-outline-variant/15">
+<p class="font-label text-xs font-semibold text-on-surface-variant">Processed</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button (FAB) -->
+<div class="fixed bottom-28 right-6 z-40">
+<button class="flex items-center justify-center gap-2 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-full px-6 py-4 shadow-[0_8px_24px_rgba(26,35,126,0.3)] hover:scale-105 active:scale-95 transition-all duration-300 relative overflow-hidden group">
+<div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
+<span class="material-symbols-outlined text-xl">add</span>
+<span class="font-headline font-bold text-sm tracking-wide">Create New Bill</span>
+</button>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-end px-4 pb-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-[#c6c5d4]/15 shadow-[0_-8px_24px_rgba(26,35,126,0.08)] rounded-t-[1.5rem] font-['Inter'] text-[10px] font-medium tracking-wide md:hidden">
+<!-- Active: History -->
+<div class="flex flex-col items-center justify-center bg-gradient-to-br from-[#000666] to-[#1a237e] text-white rounded-full p-3 mb-2 scale-110 shadow-lg transition-all duration-300 ease-out cursor-pointer">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">history</span>
+<span class="uppercase">History</span>
+</div>
+<!-- Inactive: Scan -->
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 p-2 hover:text-[#1A237E] dark:hover:text-blue-300 transition-all duration-300 ease-out cursor-pointer">
+<span class="material-symbols-outlined mb-1 text-xl">barcode_scanner</span>
+<span class="uppercase">Scan</span>
+</div>
+<!-- Inactive: Insights -->
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 p-2 hover:text-[#1A237E] dark:hover:text-blue-300 transition-all duration-300 ease-out cursor-pointer">
+<span class="material-symbols-outlined mb-1 text-xl">analytics</span>
+<span class="uppercase">Insights</span>
+</div>
+<!-- Inactive: Settings -->
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 p-2 hover:text-[#1A237E] dark:hover:text-blue-300 transition-all duration-300 ease-out cursor-pointer">
+<span class="material-symbols-outlined mb-1 text-xl">settings</span>
+<span class="uppercase">Settings</span>
+</div>
+</nav>
+</body></html>

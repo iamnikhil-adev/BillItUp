@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">BillItUp</string>
+    <string name="title_activity_main">BillItUp</string>
+    <string name="package_name">com.fluidledger.barcodescanner</string>
+    <string name="custom_url_scheme">com.fluidledger.barcodescanner</string>
+</resources>

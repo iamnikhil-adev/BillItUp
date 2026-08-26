@@ -1,0 +1,150 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-surface: #f9f9fb;
+  --color-on-surface: #1a1c1d;
+  --color-surface-container-low: #f3f3f5;
+  --color-surface-container: #eeeef0;
+  --color-surface-container-high: #e8e8ea;
+  --color-surface-container-highest: #e2e2e4;
+  --color-surface-container-lowest: #ffffff;
+  --color-primary: #1a237e;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #e0e0ff;
+  --color-on-primary-container: #000767;
+  --color-secondary: #0056c5;
+  --color-on-secondary: #ffffff;
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-outline-variant: #c6c5d4;
+  --color-on-surface-variant: #454652;
+  --color-glass: rgba(255, 255, 255, 0.84);
+  
+  /* Precision Easing & Spring Tokens */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
+  --elastic-out: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dark {
+  --color-surface: #121212;
+  --color-on-surface: #e2e2e6;
+  --color-surface-container-low: #1c1c1f;
+  --color-surface-container: #1f1f23;
+  --color-surface-container-high: #25262a;
+  --color-surface-container-highest: #2b2c31;
+  --color-surface-container-lowest: #0f1113;
+  --color-primary: #bdc2ff;
+  --color-on-primary: #000666;
+  --color-primary-container: #1a237e;
+  --color-on-primary-container: #e0e0ff;
+  --color-secondary: #adc6ff;
+  --color-on-secondary: #002e69;
+  --color-error: #ffb4ab;
+  --color-on-error: #690005;
+  --color-outline-variant: #44474e;
+  --color-on-surface-variant: #c4c6d0;
+  --color-glass: rgba(30, 31, 35, 0.8);
+}
+
+@layer base {
+  html {
+    scrollbar-gutter: stable; /* ELIMINATES HORIZONTAL JUMP ON MODAL/SCANNER OPEN */
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  body {
+    @apply font-body bg-surface text-on-surface antialiased overflow-x-hidden;
+    min-height: 100dvh;
+    overscroll-behavior-y: none; /* PREVENTS JITTERY SEARCH-RELOAD GESTURES ON MOBILE */
+    touch-action: manipulation;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    @apply transition-colors duration-300;
+  }
+}
+
+.motion-root {
+  will-change: transform, opacity;
+  transform-origin: center center;
+  perspective: 1200px; /* IMPROVES COMPOSITING FOR 60FPS ANIMATIONS */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.glass-card {
+  background-color: var(--color-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Capacitor Barcode Scanner Transparency */
+html.scanner-active,
+body.scanner-active,
+body.scanner-active #root,
+body.scanner-active .motion-root {
+  background-color: transparent !important;
+  --bg-surface: transparent !important;
+}
+
+body.scanner-active .scanner-hide {
+  visibility: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+}
+
+.scanner-viewfinder {
+  position: relative;
+  width: 256px; /* Exactly w-64 */
+  height: 256px; /* Exactly h-64 */
+  border-radius: 20px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.65); /* SLIGHTLY DARKER FOR TEXT LEGIBILITY */
+  z-index: 100;
+}
+
+.scanner-viewfinder::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 4px solid #fff;
+  border-radius: 20px;
+}
+
+/* Simple Cropping UI */
+.ReactCrop {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ReactCrop__crop-selection {
+  border: 1px dashed #fff !important;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5) !important;
+}
+
+.ReactCrop__handle {
+  width: 14px !important;
+  height: 14px !important;
+  background-color: #fff !important;
+  border: 1px solid #000 !important;
+  border-radius: 50% !important;
+}

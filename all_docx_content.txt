@@ -1,0 +1,651 @@
+--- CONTENT OF Barcode_Bill_Scanner_PRD.docx ---
+PARAGRAPHS:
+BARCODE BILL SCANNER APP
+Complete Product Specification Document
+Android Mobile Application
+Document Version: 1.0
+Executive Summary
+The Barcode Bill Scanner App is an Android mobile application designed to streamline bill creation and product documentation. Users can create detailed bills with multiple products, capturing serial numbers through barcode scanning and manual entry, then export the complete bill as a PDF document.
+Key Features:
+Barcode scanning for serial number capture
+Multi-product bill creation with unlimited products
+Dynamic serial number field generation based on quantity
+Offline functionality (no internet required)
+PDF export with date/time metadata and bill ID
+Local bill storage for viewing, editing, and duplication
+1. Core User Workflow
+The app follows a linear, step-by-step workflow to ensure all required data is captured before bill finalization.
+1.1 Workflow Steps
+2. Form Fields & Data Requirements
+2.1 Mandatory Fields
+The following fields are mandatory and must be completed for every product:
+2.2 Optional Fields
+Product Description (optional) - If left empty, it will not appear in the PDF export
+2.3 Field Unlock Sequence
+Fields are progressively unlocked as the user completes prior fields to guide the data entry flow:
+Product Name entered → Quantity, Model Number fields unlock
+Quantity entered → Serial Number entry tabs appear (equal to quantity)
+All product fields completed → Add Another Product button appears
+3. Barcode Scanning Functionality
+3.1 Supported Barcode Formats
+Industry-specific serial number barcodes (e.g., Code128, Code39)
+3.2 Scanning Process
+For each Serial Number entry tab:
+User can tap the camera icon next to the serial number field
+Camera opens fullscreen, covering the entire form
+App detects and scans the barcode
+On success: Serial number auto-populates and focus moves to next serial number field
+3.3 Scan Error Handling
+3.4 Duplicate Serial Number Prevention
+If a serial number (scanned or manual) already exists in the current product:
+Warning message displayed: "This serial number already exists in this product"
+User can still proceed (allow duplicates within warning)
+3.5 Camera Permissions
+On first app launch, a system permission dialog requests camera access:
+User grants permission → Camera icon enabled
+User denies permission → Camera icon disabled, message shown: "Camera permission required. Enable in Settings."
+Manual entry still available for all serial numbers
+3.6 Manual Serial Number Entry
+Serial numbers can always be entered manually by typing into the field:
+No validation format enforced (alphanumeric allowed)
+Duplicate warning shown (same as scanning), but entry allowed
+4. Serial Number Management
+4.1 Dynamic Tab Generation
+When user enters a quantity value, the app automatically creates that many serial number entry tabs:
+Example: Quantity = 3 → Three tabs labeled "Serial 1", "Serial 2", "Serial 3"
+Each tab has a text input field + camera icon for scanning
+4.2 Quantity Change & Serial Number Removal
+If user changes quantity from a higher to lower number (e.g., 3 to 2):
+Dialog appears: "You have 3 serial numbers. Quantity is now 2. Select which serial number to remove:"
+User selects which serial number to delete
+Selected serial number removed, tabs regenerated
+5. Product Management
+5.1 Adding Multiple Products
+Once all mandatory fields are completed for a product:
+"Add Another Product" button appears below the form
+Clicking it creates a new product section (same form repeats below with Product Name field active)
+5.2 Product Limits
+Maximum 20 products per bill. No explicit limit shown; app prevents adding beyond 20 with message: "Maximum 20 products per bill reached."
+5.3 Product Editing
+After adding a product, users can:
+Edit any field by tapping into it
+Delete the entire product by tapping a Delete button at the top-right of the product section
+Product label shows "Product 1", "Product 2", etc.
+5.4 Product Deletion & Undo
+When user deletes a product:
+Product is immediately removed from the form
+"Undo" button appears (allows undoing only the most recent deletion)
+Undo button disappears after a new action is performed
+5.5 Duplicate Product Names
+Multiple products can have the same name. No duplicate prevention or warning is implemented.
+6. Form Validation & Bill Submission
+6.1 Validation Rules
+A bill can only be saved if:
+At least one product is added
+All mandatory fields (Product Name, Model Number, Quantity, Serial Numbers) are filled
+All serial number fields have values (no empty tabs)
+6.2 Validation Summary on Save
+When user taps the Save button:
+App validates all fields
+If validation fails, a summary dialog appears listing all missing/invalid fields
+Dialog does NOT auto-scroll to first error; user manually navigates
+If validation passes, bill is saved and PDF preview screen appears
+7. PDF Export & Download
+7.1 PDF Content
+The PDF contains a table with all product details:
+7.2 PDF Metadata
+Each PDF includes:
+Bill ID (auto-generated): BILL_YYYYMMDD_###
+Creation Date & Time
+7.3 PDF Preview Screen
+Before downloading, user sees the PDF preview with the following buttons:
+"Back to Edit" - Returns to the form for making changes
+"Download" - Immediately downloads the PDF (no confirmation dialog)
+"Share" - Opens system share sheet to send PDF via email, messaging, etc.
+"Print" - Opens print dialog
+7.4 PDF Filename
+Format: BILL_{AUTO_ID}_{TIMESTAMP}.pdf (e.g., BILL_20250417_001_20250417_143045.pdf)
+8. Data Persistence & Bill Management
+8.1 Local Storage
+After a bill is saved and PDF is generated:
+Bill data is stored locally on the device
+Data is NOT discarded after download
+8.2 Bill History & Viewing
+A "Bills" or "History" screen allows users to:
+View all previously saved bills
+View details of any bill
+Open and edit any bill, then re-export as PDF
+8.3 Bill Duplication
+From the bill history, users can duplicate a previous bill's structure (all products and fields except serial numbers) to start a new similar bill.
+8.4 Draft & Auto-Save
+If user closes the app mid-form, the session starts fresh on next launch. No auto-save or draft recovery is implemented.
+9. Technical Specifications
+9.1 Platform & Environment
+9.2 Key Libraries & Dependencies
+9.3 Database Schema
+SQLite database stores bills locally with the following tables:
+Bills Table
+Stores bill metadata
+Products Table
+Stores product details for each bill
+Serial Numbers Table
+Stores individual serial numbers for each product
+10. Wireframes & Screen Flows
+Below are the key screens and workflows in the application:
+10.1 Home/Dashboard Screen
+- Displays list of all saved bills
+- "Create New Bill" button at the top
+- Each bill shows: Bill ID, Creation Date, Product Count
+- Actions: View, Edit, Duplicate, Delete
+10.2 Bill Creation/Edit Form
+- Linear scrollable form with products stacked vertically
+- Each product section has:
+Product Label with Delete button
+Product Name input (locked initially)
+Quantity & Model Number inputs (locked until Product Name filled)
+Product Description input (optional, always unlocked)
+Serial Number tabs (appear after Quantity entered)
+- Bottom of form: Save button, Add Another Product button
+10.3 Serial Number Entry
+- Horizontal tab layout: "Serial 1 | Serial 2 | Serial 3"
+- Each tab has:
+Text input field for serial number
+Camera icon button to scan barcode
+10.4 Barcode Scanning Screen
+- Fullscreen camera view
+- Instructions: "Point camera at barcode"
+- Close button to exit scanning
+10.5 Scan Error Dialog
+- Error message: "Could not verify the barcode"
+- After 2 failures: "Could not verify the barcode. Please check if the barcode is correct."
+- Buttons: Retry, Cancel
+10.6 PDF Preview Screen
+- PDF document displayed in preview
+- Buttons at bottom: Back to Edit, Download, Share, Print
+- Back to Edit returns to the form with all data intact
+11. Implementation Roadmap
+11.1 Technology Stack
+11.2 Development Phases
+11.3 Estimated Timeline
+Phase 1 (Core Features): 4-6 weeks | Phase 2 (Barcode & PDF): 3-4 weeks | Phase 3 (Testing & Polish): 2-3 weeks | Total: 9-13 weeks
+12. Design System & UX Principles
+12.1 Color Palette
+12.2 Typography
+- Font Family: Roboto (Material Design standard)
+- Headings: Roboto Bold, 18-20sp
+- Body Text: Roboto Regular, 14-16sp
+12.3 UX Principles
+Progressive Disclosure: Fields unlock sequentially to guide user flow
+Error Prevention: Validation summary shown before save, duplicates warned
+Clarity: Clear labels, helpful error messages, visual hierarchy
+Offline-First: All functionality works without internet
+Undo Capability: One-step undo for product deletion
+13. Success Metrics & Testing
+13.1 Key Performance Indicators
+Barcode scan success rate > 95%
+Bill creation completion rate > 90% (users who start complete)
+PDF generation time < 2 seconds
+App crash-free hours > 99.5%
+User satisfaction score > 4.5/5
+13.2 Testing Strategy
+Unit Tests: Form validation, serial number generation, PDF creation
+Integration Tests: Barcode scanning, data persistence, PDF export
+E2E Tests: Complete user workflow from bill creation to PDF download
+Device Testing: Samsung Galaxy S20, Google Pixel 5, other common devices
+Offline Testing: Full functionality without internet
+Appendix: Decision Log
+Key Design Decisions
+End of Document
+
+TABLES:
+Step | Action | Output
+1 | User taps 'Create Bill' | Form opens with Product Name field active
+2 | User enters Product Name | Quantity & Model Number fields unlock
+3 | User enters Quantity | Serial Number entry tabs appear (count = quantity)
+4 | User fills all mandatory fields | 'Add Another Product' button appears
+5 | User taps 'Add Another Product' | New product section added, same form repeats
+6 | Repeat steps 2-5 for each product | Form expands with multiple product sections
+7 | All products complete, user taps 'Save' | Validation runs; if passed, PDF preview appears
+8 | User reviews PDF, taps 'Download' | PDF saved locally; bill data stored
+9 | From bill history, user can edit/duplicate | Re-open form, make changes, regenerate PDF
+--------------------
+Field | Type | Notes
+Product Name | Text input | Must be filled; can duplicate names allowed
+Model Number | Text input (free-text, saveable) | Can save new models for future use
+Quantity | Number input | Determines number of serial number tabs
+Serial Numbers | Multiple text inputs | One per quantity; can scan or enter manually
+--------------------
+Attempt | Error Message | Actions
+1st Failure | "Could not verify the barcode" | Retry button, Cancel button
+2nd Failure | "Could not verify the barcode. Please check if the barcode is correct." | Retry button, Cancel button
+User Action | - Retry: Camera reopens; - Cancel: Returns to serial input field | Manual entry always available
+--------------------
+Column | Content
+Bill ID | Auto-generated: BILL_YYYYMMDD_###
+Created Date/Time | YYYY-MM-DD HH:MM:SS
+Product Name | From form entry
+Model Number | From form entry
+Quantity | Number of items
+Product Description | Optional; omitted if empty
+Serial Numbers | All serial numbers for the product, one per row
+--------------------
+Specification | Requirement
+Platform | Android (native)
+Min Android Version | Android 8.0 (API 26)
+Target Android Version | Android 14+ (API 34+)
+Language | Kotlin
+Offline Support | Yes, full functionality
+Internet Required | No
+Database | SQLite
+Camera Support | Required (with fallback to manual entry)
+--------------------
+Library | Purpose | Version
+ML Kit Barcode Scanning | Barcode detection & reading | Latest stable
+Jetpack Compose | UI framework | Latest stable
+Room Database | SQLite ORM | Latest stable
+Jetpack ViewModel | Data persistence across rotations | Latest stable
+Hilt | Dependency injection | Latest stable
+iText/PDFKit | PDF generation | Latest stable
+CameraX | Camera access & permissions | Latest stable
+--------------------
+Column | Type | Description
+id | INTEGER PRIMARY KEY | Unique bill identifier
+billId | TEXT UNIQUE | User-facing bill ID (BILL_YYYYMMDD_###)
+createdAt | TEXT | ISO 8601 timestamp
+productCount | INTEGER | Number of products in bill
+status | TEXT | Status (DRAFT, SAVED, EXPORTED)
+--------------------
+Column | Type | Description
+id | INTEGER PRIMARY KEY | Unique product identifier
+billId | INTEGER FK | Reference to bills table
+productName | TEXT | Product name from form
+modelNumber | TEXT | Model number from form
+quantity | INTEGER | Number of items
+description | TEXT | Optional product description
+sequenceNo | INTEGER | Order in bill (Product 1, 2, etc.)
+--------------------
+Column | Type | Description
+id | INTEGER PRIMARY KEY | Unique serial identifier
+productId | INTEGER FK | Reference to products table
+serialNumber | TEXT | Serial number value
+sequenceNo | INTEGER | Serial order (1, 2, 3, etc.)
+scannedAt | TEXT | Timestamp of scan/entry (optional)
+--------------------
+Layer | Technology
+Language | Kotlin
+UI Framework | Jetpack Compose
+Architecture | MVVM (Model-View-ViewModel)
+Local Database | Room (SQLite)
+Dependency Injection | Hilt
+Barcode Scanning | ML Kit Vision Barcode Scanning
+Camera | CameraX
+PDF Generation | iText 7 or PDFKit
+Version Control | Git
+CI/CD | GitHub Actions (optional)
+Testing | JUnit 4, Espresso, Mockito
+--------------------
+Phase | Duration | Deliverables
+Phase 1: Core Framework | Weeks 1-2 | Project setup, database schema, MVVM architecture, form UI
+Phase 2: Form Logic | Weeks 3-4 | Field unlock logic, product CRUD, serial number management, validation
+Phase 3: Barcode Integration | Weeks 5-6 | Camera setup, ML Kit integration, scan error handling
+Phase 4: PDF Export | Weeks 7-8 | PDF generation, preview screen, save/share functionality
+Phase 5: Bill History | Weeks 9-10 | Bill persistence, history screen, edit/duplicate functionality
+Phase 6: Testing & Polish | Weeks 11-13 | Unit/integration/E2E tests, bug fixes, UI refinement, documentation
+--------------------
+Element | Color | Hex Code
+Primary | Blue | #2196F3
+Secondary | Light Blue | #81D4FA
+Success | Green | #4CAF50
+Error | Red | #F44336
+Warning | Orange | #FF9800
+Background | White | #FFFFFF
+Text Primary | Dark Gray | #212121
+Text Secondary | Gray | #757575
+Disabled | Light Gray | #BDBDBD
+--------------------
+Decision | Rationale
+Fullscreen Camera | Maximizes barcode detection area; improves UX for scanning
+Linear Scroll Form | Simplifies navigation; prevents complexity of nested tabs
+Auto-generated Bill IDs | Ensures uniqueness; no user confusion about duplicate IDs
+Offline-Only | Works in any environment; faster performance; privacy-focused
+SQLite Storage | Lightweight, fast, built-in Android support; no server needed
+Duplicate Serial Warnings (not prevention) | Allows flexibility; warns user but respects intent
+One-Step Undo | Simple to implement; prevents accidental loss of only last action
+No Draft Auto-Save | Simplifies data model; cleaner UX (explicit save required)
+Kotlin + Jetpack Compose | Modern, type-safe language; declarative UI for faster development
+--------------------
+
+
+--- CONTENT OF BillItUp_SOP.docx ---
+PARAGRAPHS:
+
+STANDARD OPERATING PROCEDURE
+BillItUp Application
+Development & Feature Implementation Guide
+
+
+Table of Contents
+
+1. Purpose
+This Standard Operating Procedure (SOP) defines the structured approach for developing and implementing all features of the BillItUp application. It ensures that development is carried out in a consistent, phase-based manner that maintains UI/UX quality, data integrity, and system reliability across all modules.
+
+2. Scope
+This SOP applies to all developers, QA engineers, and project stakeholders involved in the BillItUp application lifecycle. It governs the implementation of seven defined development phases, from bill numbering to PDF synchronization.
+
+3. Core Development Rules
+All development work on BillItUp must adhere to the following non-negotiable principles:
+
+UI/UX must remain smooth, modern, responsive, and visually clean throughout all changes.
+No lag, jittering, layout shifts, broken animations, or inconsistent spacing is permitted.
+Frontend interactions must feel polished with smooth transitions and animations.
+All edit logic must preserve data consistency and prevent accidental overwrites.
+Changes must be implemented phase-by-phase to avoid introducing bugs.
+All timestamps must use a consistent date-time format across the entire application.
+All edit history and logs must be permanent and non-editable.
+Bill structure and sequence numbering must never break, even after deletions.
+
+4. Phase-by-Phase Operating Procedures
+4.1 Phase 1 – Bill Numbering & Core Data Structure
+
+
+4.2 Phase 2 – Product Removal & Addition Workflow
+
+
+4.3 Phase 3 – Post-Save Locking Rules
+
+
+4.4 Phase 4 – Date-Based Edit Restrictions
+
+
+
+4.5 Phase 5 – Edit Logs & Timeline System
+
+
+4.6 Phase 6 – Daybook System
+
+
+4.7 Phase 7 – PDF Synchronization
+
+
+5. Quality Assurance Checklist
+Before marking any phase as complete and before releasing any version, the following QA checks must be performed:
+
+Test all addition and removal animations for smoothness and correctness.
+Test same-day edit locking — verify that edits are blocked after midnight of creation date.
+Ensure no duplicate bill numbers are generated under any conditions.
+Ensure quantities always remain accurate after additions and removals.
+Verify logs are stored permanently and displayed correctly in the timeline.
+Ensure PDF output always matches the visible UI state exactly.
+Test responsiveness on mobile, tablet, and desktop screen sizes.
+Ensure no accidental data overwrites occur during concurrent or sequential edits.
+Test edge cases — e.g., removing all serial numbers from a single product.
+Ensure smooth performance with large bills (many products) and many log entries.
+
+6. Compliance & Enforcement
+All team members are required to follow this SOP strictly. Deviation from phase-based implementation, data locking rules, or UI/UX standards must be escalated to the project lead before any alternative approach is attempted. This document is a living reference and will be updated as the application evolves.
+
+
+TABLES:
+Document Type | Standard Operating Procedure
+Application | BillItUp
+Version | 1.0
+Date | 07 May 2026
+Scope | All Development Phases
+Status | Active
+--------------------
+PHASE 1 – Bill Numbering & Core Data Structure | PHASE 1 – Bill Numbering & Core Data Structure | PHASE 1 – Bill Numbering & Core Data Structure
+Step | Procedure | Expected Outcome
+1 | Replace the random bill number system with the structured format: YYYY/MM/DD-HH:MM-(Sequence Number) | Bills are uniquely identified using date, time, and daily-reset sequence number.
+2 | Reset the sequence number daily; increment based on order of creation within the same day. | Sequence restarts at 1 each day. No duplicate bill numbers are generated.
+3 | Remove the manual 'Bill Name' input field from all bill creation and edit forms. | The generated bill number serves as the sole primary identifier.
+4 | Implement auto-uppercase conversion on Model Number and Serial Number fields — active while typing and on save. | All model and serial numbers are stored and displayed in uppercase without manual effort.
+--------------------
+PHASE 2 – Product Removal & Addition Workflow | PHASE 2 – Product Removal & Addition Workflow | PHASE 2 – Product Removal & Addition Workflow
+Step | Procedure | Expected Outcome
+1 | Replace delete buttons on the Edit Bill page with cross icons for products and serial numbers. | Cleaner UI with intuitive visual affordance for removal actions.
+2 | On cross icon click, turn the entire product or serial number box red using a smooth swipe/fade animation. | Removed items are clearly marked in red; no instant color jumps.
+3 | Preserve original product sequence numbering even after removal. Removed items remain visible as red-marked entries. | Sequence order never shifts or reorders; removed entries are traceable.
+4 | Mark newly added products or serial numbers in green with a smooth modern add animation. | Later additions are visually distinguishable from originally saved data.
+5 | Display the exact edit timestamp beside each added or removed item. | Full audit trail showing precisely when each change occurred.
+--------------------
+PHASE 3 – Post-Save Locking Rules | PHASE 3 – Post-Save Locking Rules | PHASE 3 – Post-Save Locking Rules
+Step | Procedure | Expected Outcome
+1 | Lock product names, serial numbers, model numbers, and quantity values after a bill is saved. | Original saved data is permanently protected from accidental edits.
+2 | Allow only two post-save operations: adding new items (shown in green) or removing items using the red cross-out system. | Edit scope is clearly restricted; data integrity is enforced.
+3 | Auto-reduce quantity when serial numbers are removed. Auto-increase quantity when green-added serial numbers are added. | Quantity always reflects the true active item count without manual adjustments.
+--------------------
+PHASE 4 – Date-Based Edit Restrictions | PHASE 4 – Date-Based Edit Restrictions | PHASE 4 – Date-Based Edit Restrictions
+Step | Procedure | Expected Outcome
+1 | Restrict all edit operations (add, remove, quantity update) to the same calendar date as bill creation. | Editing is only possible on the bill's creation date.
+2 | Permanently disable all edit functionality once the calendar date changes beyond the bill creation date. | Bills become completely locked after the creation day ends; no exceptions.
+--------------------
+Important Note
+Example: A bill created on May 7 can only be edited until 23:59 on May 7. From May 8 onwards, the bill is fully locked and no changes of any kind are permitted.
+--------------------
+PHASE 5 – Edit Logs & Timeline System | PHASE 5 – Edit Logs & Timeline System | PHASE 5 – Edit Logs & Timeline System
+Step | Procedure | Expected Outcome
+1 | Add a clearly visible 'View Log' button near the upper section of each bill page, maintaining UI symmetry. | Users can easily access the complete change history of any bill.
+2 | Maintain a chronological log for every bill starting with 'Created Bill on [Date] at [Time]'. Display future edits in a connected dotted-line timeline format. | Full audit trail is always visible in an organized, easy-to-read timeline.
+3 | Each log entry must contain: exact date, exact time, type of change, added items, and removed items. | Every change is fully documented with all necessary details.
+4 | Make each log entry clickable; clicking should auto-scroll/jump to the relevant section of the bill. | Users can quickly navigate from a log entry to the corresponding bill section.
+5 | Enforce read-only status on all logs; no modifications or deletions are permitted. | Audit integrity is maintained; logs cannot be tampered with.
+--------------------
+PHASE 6 – Daybook System | PHASE 6 – Daybook System | PHASE 6 – Daybook System
+Step | Procedure | Expected Outcome
+1 | Add a 'View Daybook' button below the 'Create New Bill' button on the Dashboard. Maintain proper spacing, alignment, and UI proportionality. | Daybook is easily accessible without cluttering the main dashboard.
+2 | Display all bills created on a selected date in chronological order on the Daybook page. | Users get a clear daily summary of all billing activity.
+3 | Include columns: Serial Number (running 1,2,3...), Bill Number, Customer Name, Number of Items (active only), Number of Logs (post-creation edits). | Each column provides actionable at-a-glance data for the day's bills.
+4 | Highlight log count in blue if a bill has one or more post-creation edits. | Edited bills are visually distinct; easy to identify bills requiring review.
+5 | Make the Daybook page completely read-only. Clicking a bill opens a read-only preview. | Historical daybook data is protected from accidental edits.
+--------------------
+PHASE 7 – PDF Synchronization | PHASE 7 – PDF Synchronization | PHASE 7 – PDF Synchronization
+Step | Procedure | Expected Outcome
+1 | Export PDFs that exactly reflect the current visual bill state: removed items in red, added items in green. | PDF is a true record of the bill's final state, matching the UI precisely.
+2 | Reflect updated quantity counts and edit timestamps in the exported PDF. | PDF includes all relevant quantity and audit data.
+3 | Ensure PDF formatting remains consistent across all devices and page sizes with no broken alignment or overlapping content. | Professional, clean PDFs are generated reliably on any device.
+--------------------
+
+
+--- CONTENT OF BillItUp_SRS.docx ---
+PARAGRAPHS:
+
+SOFTWARE REQUIREMENTS SPECIFICATION
+BillItUp Application
+Complete Feature & Functional Requirements Document
+
+
+Table of Contents
+
+1. Introduction
+1.1 Purpose
+This Software Requirements Specification (SRS) document formally defines the complete functional and non-functional requirements for the BillItUp application. It serves as the authoritative reference for developers, QA engineers, and stakeholders to understand exactly what the system must do, how it should behave, and what constraints govern its implementation.
+
+1.2 Product Overview
+BillItUp is a billing management application designed for businesses to create, manage, track, and export bills. The application supports structured bill numbering, product-level tracking with serial and model numbers, post-save editing controls, an audit log system, a daily daybook view, and PDF export functionality.
+
+1.3 Intended Audience
+Software Developers – for implementation guidance
+QA Engineers – for test case preparation and validation
+Project Managers – for progress tracking and scope management
+Stakeholders / Business Owners – for requirements sign-off
+
+1.4 Definitions & Abbreviations
+
+2. Overall System Description
+2.1 System Context
+BillItUp is a web-based billing application accessible via modern browsers. It manages the complete lifecycle of a bill from creation, through editing (within permitted windows), to final locked archival and PDF export. The system maintains a permanent, immutable audit trail for all changes.
+
+2.2 System Constraints
+All edits are restricted to the same calendar date as bill creation.
+Locked data cannot be unlocked or altered by any user role.
+Edit logs cannot be deleted or modified under any circumstances.
+Bill sequence numbers must be unique within any given calendar day.
+The UI must remain responsive and performant on mobile, tablet, and desktop.
+
+2.3 Assumptions & Dependencies
+The application has an existing bill management backend that supports the described data model.
+PDF generation capability is available in the technology stack.
+The system clock is authoritative for all date-time calculations and restrictions.
+Users have appropriate authentication and role-based access to interact with bills.
+
+3. Functional Requirements
+All functional requirements are organized by development phase. Each requirement carries a unique identifier, description, priority level (High / Medium / Low), and the phase it belongs to.
+
+3.1 Bill Numbering & Core Data Structure (Phase 1)
+
+3.2 Product Removal & Addition Workflow (Phase 2)
+
+3.3 Post-Save Locking Rules (Phase 3)
+
+3.4 Date-Based Edit Restrictions (Phase 4)
+
+3.5 Edit Logs & Timeline System (Phase 5)
+
+3.6 Daybook System (Phase 6)
+
+3.7 PDF Synchronization (Phase 7)
+
+4. Non-Functional Requirements
+4.1 Performance
+The application shall load bill pages and the Daybook view in under 2 seconds under normal network conditions.
+All animations (add/remove transitions) shall complete within 300ms to maintain a smooth UI experience.
+The system shall remain performant for bills containing a large number of products and log entries.
+
+4.2 Reliability & Data Integrity
+The system shall prevent duplicate bill number generation under all conditions, including concurrent bill creation.
+Edit locks must be enforced server-side; client-side enforcement alone is insufficient.
+Quantity auto-calculations shall always be consistent with the current set of active (non-removed) serial numbers.
+No data loss shall occur as a result of concurrent edits or network interruptions.
+
+4.3 Usability
+The UI must be responsive and fully functional on mobile, tablet, and desktop screen sizes.
+All animations and transitions must feel smooth and modern — no visible lag or jitter.
+Visual cues (red for removed, green for added, blue for log highlight) must be consistent across all screens and the PDF export.
+Navigation between log entries and bill sections shall be intuitive and require no more than one click.
+
+4.4 Security & Auditability
+All bill data and logs must be stored securely and protected from unauthorized access.
+Logs must be immutable — no API endpoint or database mechanism shall allow modification or deletion of log records.
+Date-based edit restrictions must be enforced using server-side date validation, not client-side date checks.
+
+4.5 Maintainability
+Features must be implemented phase-by-phase as documented to minimize regression and logic conflicts.
+Code architecture must support clean separation between bill creation, editing, locking, logging, and PDF export modules.
+All timestamps must use a single consistent date-time format across the entire application stack.
+
+5. Requirements Traceability Matrix
+The following matrix maps each functional requirement to its governing phase and associated quality assurance test.
+
+
+6. Document Approval
+This SRS document is considered the authoritative reference for BillItUp development. Any changes to requirements must be approved by the project lead and updated in this document before implementation begins.
+
+
+
+TABLES:
+Document Type | Software Requirements Specification (SRS)
+Application | BillItUp
+Version | 1.0
+Date | 07 May 2026
+Total Phases | 7 Development Phases
+Document Status | Approved for Development
+--------------------
+Term | Definition
+SRS | Software Requirements Specification
+SOP | Standard Operating Procedure
+Bill | A billing record created for a customer including products, quantities, and serial numbers
+Daybook | A daily summary view of all bills created on a specific date
+Edit Log | A permanent, time-stamped record of every change made to a bill after initial creation
+Sequence Number | A daily-reset incrementing counter used as part of the bill number format
+Phase | A defined stage of feature development to be implemented in sequence
+QA | Quality Assurance
+PDF | Portable Document Format – the export format for bills
+UI/UX | User Interface / User Experience
+--------------------
+Functional Requirements – Phase 1: Bill Numbering & Core Data Structure | Functional Requirements – Phase 1: Bill Numbering & Core Data Structure | Functional Requirements – Phase 1: Bill Numbering & Core Data Structure | Functional Requirements – Phase 1: Bill Numbering & Core Data Structure
+Req. ID | Requirement Description | Priority | Phase
+FR-1.1 | The system shall generate bill numbers in the format: YYYY/MM/DD-HH:MM-(Sequence Number). Example: 2026/05/07-14:35-1. | High | Phase 1
+FR-1.2 | The sequence number component of the bill number shall reset to 1 at the start of each new calendar day. | High | Phase 1
+FR-1.3 | The sequence number shall increment automatically based on the chronological order of bill creation within the same day. | High | Phase 1
+FR-1.4 | No two bills shall share the same bill number on the same day or across any dates. | High | Phase 1
+FR-1.5 | The manual 'Bill Name' input field shall be removed from all bill creation and editing screens. | High | Phase 1
+FR-1.6 | The generated bill number shall be used as the primary identifier throughout the dashboard, bill views, Daybook, and logs. | High | Phase 1
+FR-1.7 | The Model Number field shall automatically convert all input to uppercase while the user is typing. | Medium | Phase 1
+FR-1.8 | The Serial Number field shall automatically convert all input to uppercase while the user is typing. | Medium | Phase 1
+FR-1.9 | Both Model Number and Serial Number values shall be stored in uppercase regardless of how they were entered. | Medium | Phase 1
+--------------------
+Functional Requirements – Phase 2: Product Removal & Addition Workflow | Functional Requirements – Phase 2: Product Removal & Addition Workflow | Functional Requirements – Phase 2: Product Removal & Addition Workflow | Functional Requirements – Phase 2: Product Removal & Addition Workflow
+Req. ID | Requirement Description | Priority | Phase
+FR-2.1 | All delete buttons on the Edit Bill page shall be replaced with cross icons for both products and serial numbers. | High | Phase 2
+FR-2.2 | Clicking a cross icon shall mark the product or serial number box as removed by turning its background red. | High | Phase 2
+FR-2.3 | The color transition to red shall be animated using a smooth swipe/fade effect — no instant color changes. | Medium | Phase 2
+FR-2.4 | Removed items shall remain visible in the bill view as red-highlighted entries and shall not be physically deleted from the record. | High | Phase 2
+FR-2.5 | Original product sequence numbering (1, 2, 3…) shall remain unchanged after any removal. Sequence shall never shift or reorder. | High | Phase 2
+FR-2.6 | Products or serial numbers added after the initial save shall appear highlighted in green. | High | Phase 2
+FR-2.7 | The animation for adding a new item shall be smooth and modern (e.g., slide-in or fade-in effect). | Medium | Phase 2
+FR-2.8 | Every addition or removal event shall display the exact timestamp (date and time) beside the affected item. | High | Phase 2
+--------------------
+Functional Requirements – Phase 3: Post-Save Locking Rules | Functional Requirements – Phase 3: Post-Save Locking Rules | Functional Requirements – Phase 3: Post-Save Locking Rules | Functional Requirements – Phase 3: Post-Save Locking Rules
+Req. ID | Requirement Description | Priority | Phase
+FR-3.1 | Once a bill is saved, the product name field shall become read-only and uneditable. | High | Phase 3
+FR-3.2 | Once a bill is saved, the serial number field shall become read-only and uneditable. | High | Phase 3
+FR-3.3 | Once a bill is saved, the model number field shall become read-only and uneditable. | High | Phase 3
+FR-3.4 | Once a bill is saved, the quantity field shall become read-only and shall not accept manual input. | High | Phase 3
+FR-3.5 | After saving, the only permitted changes are: adding new products/serial numbers (displayed in green) and removing existing items (displayed in red). | High | Phase 3
+FR-3.6 | When one or more serial numbers are removed, the system shall automatically decrement the visible quantity count by the number of removed serial numbers. | High | Phase 3
+FR-3.7 | When new serial numbers are added in green, the system shall automatically increment the visible quantity count accordingly. | High | Phase 3
+--------------------
+Functional Requirements – Phase 4: Date-Based Edit Restrictions | Functional Requirements – Phase 4: Date-Based Edit Restrictions | Functional Requirements – Phase 4: Date-Based Edit Restrictions | Functional Requirements – Phase 4: Date-Based Edit Restrictions
+Req. ID | Requirement Description | Priority | Phase
+FR-4.1 | All edit operations (add, remove, quantity update) shall only be permitted on the same calendar date as the bill's creation date. | High | Phase 4
+FR-4.2 | Once the current date differs from the bill's creation date, all editing functionality shall be permanently disabled for that bill. | High | Phase 4
+FR-4.3 | After date-based locking, no additions of products or serial numbers shall be permitted. | High | Phase 4
+FR-4.4 | After date-based locking, no removals of products or serial numbers shall be permitted. | High | Phase 4
+FR-4.5 | After date-based locking, no quantity updates (manual or automatic) shall be permitted. | High | Phase 4
+FR-4.6 | The system shall use the server-side clock as the authoritative source for date determination to prevent client-side date manipulation. | High | Phase 4
+--------------------
+Functional Requirements – Phase 5: Edit Logs & Timeline System | Functional Requirements – Phase 5: Edit Logs & Timeline System | Functional Requirements – Phase 5: Edit Logs & Timeline System | Functional Requirements – Phase 5: Edit Logs & Timeline System
+Req. ID | Requirement Description | Priority | Phase
+FR-5.1 | A clearly labelled 'View Log' button shall be displayed near the upper section of each bill page, maintaining visual symmetry with surrounding UI elements. | High | Phase 5
+FR-5.2 | Every bill shall maintain a complete chronological history of all events starting with the initial creation entry: 'Created Bill on [Date] at [Time]'. | High | Phase 5
+FR-5.3 | Subsequent edit events shall appear in the log as connected entries displayed in a dotted-connector timeline format. | Medium | Phase 5
+FR-5.4 | Each log entry shall contain: exact date, exact time, type of change, list of added items, and list of removed items. | High | Phase 5
+FR-5.5 | Clicking any log entry shall automatically scroll or navigate to the corresponding section of the bill where that change is visible. | Medium | Phase 5
+FR-5.6 | Logs shall be strictly read-only. No user or administrator shall be able to modify or delete any log entry. | High | Phase 5
+FR-5.7 | Logs shall be stored permanently and shall not be purged, archived, or expired over time. | High | Phase 5
+--------------------
+Functional Requirements – Phase 6: Daybook System | Functional Requirements – Phase 6: Daybook System | Functional Requirements – Phase 6: Daybook System | Functional Requirements – Phase 6: Daybook System
+Req. ID | Requirement Description | Priority | Phase
+FR-6.1 | A 'View Daybook' button shall be added to the Dashboard, positioned below the 'Create New Bill' button with consistent spacing and alignment. | High | Phase 6
+FR-6.2 | The Daybook page shall display all bills created on a user-selected date in ascending chronological order of creation time. | High | Phase 6
+FR-6.3 | The Daybook table shall include the following columns: Serial Number (running 1, 2, 3…), Bill Number, Customer Name, Number of Items, Number of Logs. | High | Phase 6
+FR-6.4 | The 'Number of Items' column shall display the final active item count only — red-removed items shall NOT be counted; green-added items SHALL be counted. | High | Phase 6
+FR-6.5 | The 'Number of Logs' column shall display only post-creation edits. Bills with no edits shall display 0. | High | Phase 6
+FR-6.6 | If a bill has one or more post-creation log entries, the log count shall be visually highlighted in blue to distinguish edited bills. | Medium | Phase 6
+FR-6.7 | The entire Daybook page shall be read-only. No data can be edited from within the Daybook view. | High | Phase 6
+FR-6.8 | Clicking any bill row in the Daybook shall open a read-only preview of that bill. | High | Phase 6
+--------------------
+Functional Requirements – Phase 7: PDF Synchronization | Functional Requirements – Phase 7: PDF Synchronization | Functional Requirements – Phase 7: PDF Synchronization | Functional Requirements – Phase 7: PDF Synchronization
+Req. ID | Requirement Description | Priority | Phase
+FR-7.1 | Exported PDFs shall exactly reflect the current visual state of the bill at the time of export. | High | Phase 7
+FR-7.2 | Removed items shall appear highlighted in red within the exported PDF. | High | Phase 7
+FR-7.3 | Added items shall appear highlighted in green within the exported PDF. | High | Phase 7
+FR-7.4 | The PDF shall reflect the updated quantity count at the time of export. | High | Phase 7
+FR-7.5 | Edit timestamps for additions and removals shall be visible in the exported PDF where applicable. | Medium | Phase 7
+FR-7.6 | PDF layout and formatting shall remain consistent across all devices and page sizes — no broken alignment or overlapping content. | High | Phase 7
+FR-7.7 | PDF output shall maintain a clean and professional visual standard appropriate for sharing with customers. | Medium | Phase 7
+--------------------
+Req. ID | Phase | Priority | QA Test Verification
+FR-1.1 – 1.9 | Phase 1: Bill Numbering | High/Medium | Verify bill number format, daily sequence reset, no duplicates, uppercase enforcement
+FR-2.1 – 2.8 | Phase 2: Removal & Addition | High/Medium | Verify cross icon behavior, red/green highlights, animations, sequence preservation, timestamps
+FR-3.1 – 3.7 | Phase 3: Post-Save Locking | High | Verify all fields locked after save; test auto quantity decrement/increment on removal/addition
+FR-4.1 – 4.6 | Phase 4: Date Restrictions | High | Verify edits blocked after day change; test server-side date enforcement
+FR-5.1 – 5.7 | Phase 5: Edit Logs | High/Medium | Verify log completeness, click-to-scroll, read-only enforcement, permanent storage
+FR-6.1 – 6.8 | Phase 6: Daybook | High/Medium | Verify day filtering, item count accuracy, log count, blue highlight, read-only access
+FR-7.1 – 7.7 | Phase 7: PDF Export | High/Medium | Verify PDF matches UI: red/green items, quantity, timestamps, consistent formatting
+--------------------
+Prepared By | Reviewed By | Approved By
+Signature / Date | Signature / Date | Signature / Date
+--------------------
+
+
